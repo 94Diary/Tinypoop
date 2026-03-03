@@ -1,7 +1,7 @@
 const express = require('express')
 const cors = require('cors')
-const placeRoutes = require('./routes/placeRoutes')
-const userRoutes = require('./routes/userRoutes')
+const placeRoutes = require('./modules/place/placeRoutes')
+//const userRoutes = require('./routes/userRoutes')
 require('dotenv').config()
 
 const app = express()
@@ -12,7 +12,7 @@ app.use(express.json())
 
 // เรียกใช้ Routes แบ่งตาม Module
 app.use('/places', placeRoutes)
-app.use('/users', userRoutes)
+//app.use('/users', userRoutes)
 
 app.get('/', (req, res) => {
   res.send('TinyPoop Web Backend is running!')
