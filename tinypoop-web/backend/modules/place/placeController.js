@@ -2,9 +2,19 @@ const prisma = require('../../config/db')
 
 exports.getAllPlaces = async (req, res) => {
   try {
-    const places = await prisma.place.findMany()
+    const places = await prisma.place.findMany({
+      include: {
+        manager: {
+          select: {
+            username: true,
+            email: true
+          }
+        }
+      }
+    })
     res.json(places)
   } catch (error) {
+    console.error(error)
     res.status(500).json({ error: 'Something went wrong' })
   }
 }
@@ -12,7 +22,12 @@ exports.getAllPlaces = async (req, res) => {
 exports.getPlaceById = async (req, res) =>{
   try {
     const {id} = req.params
-    const place = await prisma.place.findUnique({where: {id:id}})
+    const place = await prisma.place.findUnique({
+      where: {id:id},
+      include: {
+        manager: true
+      }
+    })
     res.json(place)
   } catch (error) {
     res.status(500).json({ error: 'Failed to get place' })
@@ -21,12 +36,13 @@ exports.getPlaceById = async (req, res) =>{
 
 exports.createPlace = async (req, res) => {
   try {
-    const { place_id, name, address, description, create_by } = req.body
+    const { place_id, name, address, description, create_by, manager_id } = req.body
     const newPlace = await prisma.place.create({
-      data: { place_id, name, address, description, create_by },
+      data: { place_id, name, address, description, create_by, manager_id },
     })
     res.status(201).json(newPlace)
   } catch (error) {
+    console.error(error)
     res.status(500).json({ error: 'Failed to create place' })
   }
 }

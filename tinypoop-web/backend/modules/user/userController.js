@@ -5,9 +5,11 @@ exports.getAllUsers = async (req, res) => {
     const users = await prisma.user.findMany()
     res.json(users)
   } catch (error) {
-    res.status(500).json({ error: 'Something went wrong' })
+    console.error(error)
+    res.status(500).json({ error: 'Failed to fetch users' })
   }
 }
+
 
 exports.getUserById = async (req, res) =>{
   try {
@@ -21,15 +23,43 @@ exports.getUserById = async (req, res) =>{
 
 exports.createUser = async (req, res) => {
   try {
-    const { user_id, name, email, password, create_by } = req.body
+    const { user_id, uuid, username, email, password, role } = req.body
     const newUser = await prisma.user.create({
-      data: { user_id, name, email, password, create_by },
+      data: { user_id, uuid, username, email, password, role },
     })
     res.status(201).json(newUser)
   } catch (error) {
-    res.status(500).json({ error: 'Failed to create user' })
+    console.error("ERROR CREATE USER:", error)
+    
+    // เช็ค Error จาก Prisma (P2002 คือข้อมูลซ้ำ)
+    if (error.code === 'P2002') {
+      const field = error.meta.target.join(', ')
+      return res.status(400).json({ error: `This ${field} is already taken.` })
+    }
+    
+    res.status(500).json({ error: 'Failed to create user', detail: error.message })
   }
 }
+
+exports.login = async (req, res) => {
+  try {
+    const { username, password } = req.body
+    const user = await prisma.user.findUnique({
+      where: { username: username }
+    })
+
+    if (!user || user.password !== password) {
+      return res.status(401).json({ error: 'Invalid username or password' })
+    }
+
+    res.json({ message: 'Login successful', user })
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({ error: 'Login failed' })
+  }
+}
+
+
 
 exports.deleteUser = async (req, res) => {
   try {
