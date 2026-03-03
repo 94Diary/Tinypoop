@@ -20,16 +20,19 @@ model User {
   email     String   @unique
   password  String
   role      String
+  managedPlaces Place[] @relation("ManagerRelation")
 }
 
 model Place{
-  id        String   @id @default(uuid())
-  place_id   String   @unique
-  name      String
-  address   String
+  id          String   @id @default(uuid())
+  place_id    String   @unique
+  name        String
+  address     String
   description String
-  create_by String
+  create_by   String
   create_date DateTime @default(now())
+  manager_id  String?
+  manager     User?    @relation("ManagerRelation", fields: [manager_id], references: [user_id])
 }
 
 model Locate{
@@ -49,7 +52,7 @@ model Report{
   content String
   status String
   assigned_staff_id String
-  complete_at DateTime
+  complete_at DateTime?
   create_at DateTime @default(now())
 }
 
