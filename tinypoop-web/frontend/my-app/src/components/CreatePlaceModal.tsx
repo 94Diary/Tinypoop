@@ -1,4 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+
+interface User {
+  user_id: string;
+  username: string;
+  role: string;
+}
 
 interface CreatePlaceModalProps {
   onClose: () => void;
@@ -7,12 +13,28 @@ interface CreatePlaceModalProps {
 
 const CreatePlaceModal: React.FC<CreatePlaceModalProps> = ({ onClose, onSuccess }) => {
   const [formData, setFormData] = useState({
-    place_id: "PLACE_" + Math.random().toString(36).substring(2, 9),
+    place_id: "PLACE_" + Math.random().toString(36).substring(2, 9).toUpperCase(),
     name: "",
     address: "",
     description: "",
     create_by: "Web User",
+    manager_id: "",
   });
+
+  const [users, setUsers] = useState<User[]>([]);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const res = await fetch("http://localhost:8080/users");
+        const data = await res.json();
+        setUsers(data);
+      } catch (err) {
+        console.error("Failed to fetch users", err);
+      }
+    };
+    fetchUsers();
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,61 +60,79 @@ const CreatePlaceModal: React.FC<CreatePlaceModalProps> = ({ onClose, onSuccess 
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
-      <div className="bg-white p-6 rounded-lg w-full max-w-md">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+      <div className="bg-white p-6 rounded-lg w-full max-w-md shadow-xl">
         <h2 className="text-xl font-bold mb-4">Create New Place</h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label className="block text-sm font-medium mb-1">Place ID (Unique)</label>
+            <label className="block text-sm font-medium mb-1 text-gray-700">Place ID (Unique)</label>
             <input
               type="text"
               required
-              className="w-full border p-2 rounded"
+              className="w-full border p-2 rounded focus:ring-2 focus:ring-blue-500 outline-none"
               value={formData.place_id}
               onChange={(e) => setFormData({ ...formData, place_id: e.target.value })}
             />
           </div>
           <div className="mb-4">
-            <label className="block text-sm font-medium mb-1">Name</label>
+            <label className="block text-sm font-medium mb-1 text-gray-700">Name</label>
             <input
               type="text"
               required
-              className="w-full border p-2 rounded"
+              placeholder="E.g. Main Office"
+              className="w-full border p-2 rounded focus:ring-2 focus:ring-blue-500 outline-none"
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
             />
           </div>
           <div className="mb-4">
-            <label className="block text-sm font-medium mb-1">Address</label>
+            <label className="block text-sm font-medium mb-1 text-gray-700">Address</label>
             <input
               type="text"
               required
-              className="w-full border p-2 rounded"
+              placeholder="E.g. 123 Street, City"
+              className="w-full border p-2 rounded focus:ring-2 focus:ring-blue-500 outline-none"
               value={formData.address}
               onChange={(e) => setFormData({ ...formData, address: e.target.value })}
             />
           </div>
           <div className="mb-4">
-            <label className="block text-sm font-medium mb-1">Description</label>
+            <label className="block text-sm font-medium mb-1 text-gray-700">Assign Manager (User)</label>
+            <select
+              className="w-full border p-2 rounded focus:ring-2 focus:ring-blue-500 outline-none bg-white"
+              value={formData.manager_id}
+              onChange={(e) => setFormData({ ...formData, manager_id: e.target.value })}
+            >
+              <option value="">-- Select a user to manage this place --</option>
+              {users.map((user) => (
+                <option key={user.user_id} value={user.user_id}>
+                  {user.username} ({user.role})
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="mb-4">
+            <label className="block text-sm font-medium mb-1 text-gray-700">Description</label>
             <textarea
-              className="w-full border p-2 rounded"
+              placeholder="Description of the place..."
+              className="w-full border p-2 rounded focus:ring-2 focus:ring-blue-500 outline-none h-24"
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
             />
           </div>
-          <div className="flex justify-end gap-2">
+          <div className="flex justify-end gap-2 mt-6">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-gray-600 hover:text-gray-800"
+              className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded transition"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition font-medium shadow-sm"
             >
-              Create
+              Create Place
             </button>
           </div>
         </form>
