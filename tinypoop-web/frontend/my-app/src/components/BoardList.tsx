@@ -1,4 +1,3 @@
-// components/BoardList.tsx
 import React, { useEffect, useState } from "react";
 import BoardCard from "./BoardCard";
 import CreatePlaceModal from "./CreatePlaceModal";

@@ -16,7 +16,7 @@ function App() {
 
           <Route path="dashboard" element={<Dashboard/>} />
 
-          <Route path="TestUi" element={<EIEI />} />
+          <Route path="TestUI" element={<EIEI />} />
 
           <Route path="templates" element={<EIEI />} />
 

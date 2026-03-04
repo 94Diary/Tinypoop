@@ -1,4 +1,3 @@
-// components/SideBar.tsx
 import React from "react";
 import { NavLink } from "react-router-dom";
 
@@ -20,7 +19,7 @@ const SideBar: React.FC = () => {
             }`
           }
         >
-          Dashboard
+          PlaceManagement
         </NavLink>
 
         <NavLink
