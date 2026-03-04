@@ -10,7 +10,7 @@ const port = process.env.PORT || 8080
 app.use(cors())
 app.use(express.json())
 
-// เรียกใช้ Routes แบ่งตาม Module
+// เรียกใช้ placesRoutes แบ่งตาม Module
 app.use('/places', placeRoutes)
 app.use('/users', userRoutes)
 
