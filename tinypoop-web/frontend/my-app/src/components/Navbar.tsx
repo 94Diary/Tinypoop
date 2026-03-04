@@ -3,21 +3,29 @@ import React from "react";
 
 const NavBar: React.FC = () => {
   return (
-    <nav className="flex justify-between items-center bg-blue-100 p-4 rounded-md">
-      <div className="space-x-4">
-        <a href="#" className="text-blue-700 font-semibold">Dashboard</a>
-        <a href="#" className="text-gray-700">Teams</a>
-        <a href="#" className="text-gray-700">Templates</a>
-        <a href="#" className="text-gray-700">Archive</a>
+    <nav className="relative z-10 flex items-center bg-gray-900 px-6 py-3 border-b border-white/20 shadow-lg shadow-black/20">
+      
+      {/* Left*/}
+      <div className="flex items-center">
+        <a href="#" className="text-white font-semibold text-lg">
+          TinyPoop
+        </a>
       </div>
-      <div className="flex items-center space-x-2">
+
+      {/* Center*/}
+      <div className="flex-1 flex justify-center">
         <input
           type="text"
           placeholder="Search boards..."
-          className="border rounded px-2 py-1"
+          className="w-1/2 border rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-400"
         />
-        <span className="text-xl">👤</span>
       </div>
+
+      {/* Right*/}
+      <div className="flex items-center">
+        <span className="text-xl cursor-pointer">👤</span>
+      </div>
+
     </nav>
   );
 };

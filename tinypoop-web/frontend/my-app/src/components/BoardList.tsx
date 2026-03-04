@@ -61,8 +61,8 @@ const BoardList: React.FC = () => {
   );
 
   return (
-    <div className="mt-6">
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+    <div className="mt-12">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10">
         {places.map((place) => (
           <BoardCard
             key={place.id}
@@ -78,7 +78,7 @@ const BoardList: React.FC = () => {
         
         <button
           onClick={() => setIsModalOpen(true)}
-          className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-gray-500 hover:text-blue-600 hover:border-blue-400 hover:bg-blue-50 transition-all flex flex-col items-center justify-center min-h-[160px]"
+          className="bg-gray-700 shadow-2xl border border-gray-800 shadow-gray-900/80 rounded-lg p-6 text-white hover:text-white hover:border-blue-400 hover:bg-gray-900 transition-all flex flex-col items-center justify-center min-h-[120px]"
         >
           <span className="text-3xl mb-2">+</span>
           <span className="font-medium">Create New Place</span>
@@ -95,7 +95,7 @@ const BoardList: React.FC = () => {
       )}
 
       {places.length === 0 && !loading && (
-        <div className="text-center py-10 bg-gray-50 rounded-xl border-2 border-dashed border-gray-200 mt-4">
+        <div className="text-center py-10 rounded-xl bg-gray-800 border border-gray-800 mt-16">
           <p className="text-gray-500">No places found. Click the button above to create one.</p>
         </div>
       )}
