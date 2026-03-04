@@ -104,7 +104,7 @@ const CreatePlaceModal: React.FC<CreatePlaceModalProps> = ({ onClose, onSuccess 
               onChange={(e) => setFormData({ ...formData, manager_id: e.target.value })}
             >
               <option value="">-- Select a user to manage this place --</option>
-              {users.map((user) => (
+              {users.filter(user => user.role === "ADMIN").map((user) => (
                 <option key={user.user_id} value={user.user_id}>
                   {user.username} ({user.role})
                 </option>
