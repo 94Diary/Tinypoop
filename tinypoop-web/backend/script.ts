@@ -11,8 +11,8 @@ const prisma = new PrismaClient({ adapter })
 async function main() {
   const place = await prisma.place.create({
     data: {
-      place_id: "PLACE_002",
-      name: "SPU",
+      place_id: "PLACE_001",
+      name: "DPU",
       address: "Bangkok, Thailand",
       description: "Public park",
       create_by: "admin",
