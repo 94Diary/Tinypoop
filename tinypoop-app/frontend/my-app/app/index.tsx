@@ -22,7 +22,7 @@ export default function Home() {
   const fetchPlaces = useCallback(async (showLoading = false) => {
     if (showLoading) setLoading(true);
     try {
-      const response = await fetch("http://192.168.1.33:8080/places");
+      const response = await fetch("http://192.168.253.130:8080/places");
       const data = await response.json();
       setPlaces(data);
     } catch (err) {
