@@ -1,3 +1,4 @@
+import axios from "axios";
 import React, { useState, useEffect } from "react";
 
 interface User {
@@ -26,9 +27,8 @@ const CreatePlaceModal: React.FC<CreatePlaceModalProps> = ({ onClose, onSuccess 
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const res = await fetch("http://localhost:8080/users");
-        const data = await res.json();
-        setUsers(data);
+        const res = await axios.get("http://localhost:8080/users");
+        setUsers(res.data);
       } catch (err) {
         console.error("Failed to fetch users", err);
       }
@@ -39,23 +39,12 @@ const CreatePlaceModal: React.FC<CreatePlaceModalProps> = ({ onClose, onSuccess 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await fetch("http://localhost:8080/places", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
-
-      if (response.ok) {
-        onSuccess();
-        onClose();
-      } else {
-        alert("Failed to create place");
-      }
-    } catch (error) {
-      console.error("Error:", error);
-      alert("Error creating place");
+      await axios.post("http://localhost:8080/places", formData);
+      onSuccess();
+      onClose();
+    }catch (err) {
+      console.error("Failed to create place", err);
+      alert("Error creating place. Please try again.");
     }
   };
 
@@ -104,7 +93,7 @@ const CreatePlaceModal: React.FC<CreatePlaceModalProps> = ({ onClose, onSuccess 
               onChange={(e) => setFormData({ ...formData, manager_id: e.target.value })}
             >
               <option value="">-- Select a user to manage this place --</option>
-              {users.filter(user => user.role === "ADMIN").map((user) => (
+              {users.map((user) => (
                 <option key={user.user_id} value={user.user_id}>
                   {user.username} ({user.role})
                 </option>

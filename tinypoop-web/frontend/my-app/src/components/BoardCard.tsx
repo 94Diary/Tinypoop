@@ -1,4 +1,3 @@
-// components/BoardCard.tsx
 import React from "react";
 
 interface BoardProps {

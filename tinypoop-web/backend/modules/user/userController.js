@@ -10,6 +10,31 @@ exports.getAllUsers = async (req, res) => {
   }
 }
 
+exports.getPageUsers = async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1
+    const limit = 10
+    const skip = (page - 1) * limit
+    const users = await prisma.user.findMany({
+      skip: skip,
+      take: limit
+    })
+
+    const totalUsers = await prisma.user.count()
+    
+    res.json({
+      page,
+      limit,
+      totalUsers,
+      totalPages: Math.ceil(totalUsers / limit),
+      users
+    })
+
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({ error: 'Failed to fetch users' })
+  }
+}
 
 exports.getUserById = async (req, res) =>{
   try {
@@ -86,3 +111,4 @@ exports.deleteUser = async (req, res) => {
     res.status(500).json({ error: 'Failed to delete user' })
   }
 }
+

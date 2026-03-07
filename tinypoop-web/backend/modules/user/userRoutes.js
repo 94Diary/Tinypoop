@@ -4,6 +4,7 @@ const userController = require('./userController')
 
 // กำหนดเส้นทาง
 router.get('/', userController.getAllUsers)
+router.get('/page', userController.getPageUsers)
 router.get('/:id', userController.getUserById)
 router.post('/login', userController.login)
 router.post('/', userController.createUser)

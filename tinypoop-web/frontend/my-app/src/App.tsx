@@ -1,27 +1,29 @@
-import React, { useState } from 'react';
-import './App.css';
-import Dashboard from './components/Dashboard';
-import AuthPage from './components/AuthPage';
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import MainLayout from "./components/UI/MainLayout";
+import Dashboard from "./components/UI/Dashboard";
+import UserManager from "./components/UserManager";
 
 function App() {
-  const [user, setUser] = useState<any>(null);
-
-  const handleLoginSuccess = (userData: any) => {
-    setUser(userData);
-  };
-
-  const handleLogout = () => {
-    setUser(null);
-  };
-
-  if (!user) {
-    return <AuthPage onLoginSuccess={handleLoginSuccess} />;
-  }
-
   return (
-    <div className="App">
-      <Dashboard user={user} onLogout={handleLogout} />
-    </div>
+    <BrowserRouter>
+      <Routes>
+
+        {/* Layout ครอบทุกหน้า */}
+        <Route path="/" element={<MainLayout />}>
+
+          {/* default redirect */}
+          <Route index element={<Navigate to="/dashboard" />} />
+
+          <Route path="dashboard" element={<Dashboard/>} />
+
+          <Route path="TestUI" element={<UserManager />} />
+
+          <Route path="templates" element={<UserManager />} />
+
+        </Route>
+
+      </Routes>
+    </BrowserRouter>
   );
 }
 
