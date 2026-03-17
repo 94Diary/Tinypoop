@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 interface User {
   user_id: string;
   username: string;
+  email?: string;
   role: string;
 }
 
@@ -23,6 +24,9 @@ const CreatePlaceModal: React.FC<CreatePlaceModalProps> = ({ onClose, onSuccess 
   });
 
   const [users, setUsers] = useState<User[]>([]);
+  const adminUsers = users
+    .filter((user) => user.role.toLowerCase() === "admin")
+    .sort((left, right) => left.username.localeCompare(right.username));
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -92,13 +96,14 @@ const CreatePlaceModal: React.FC<CreatePlaceModalProps> = ({ onClose, onSuccess 
               value={formData.manager_id}
               onChange={(e) => setFormData({ ...formData, manager_id: e.target.value })}
             >
-              <option value="">-- Select a user to manage this place --</option>
-              {users.map((user) => (
+              <option value="">-- Select an admin to manage this place --</option>
+              {adminUsers.map((user) => (
                 <option key={user.user_id} value={user.user_id}>
                   {user.username} ({user.role})
                 </option>
               ))}
             </select>
+            <p className="mt-2 text-xs text-gray-500">เลือกได้เฉพาะผู้ใช้ที่มี role admin</p>
           </div>
           <div className="mb-4">
             <label className="block text-sm font-medium mb-1 text-gray-700">Description</label>
