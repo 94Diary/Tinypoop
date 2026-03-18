@@ -1,18 +1,25 @@
 import React from "react";
 import BoardList from "../BoardList";
+import type { AuthUser } from "../../types/auth";
 
-const Dashboard: React.FC = () => {
+interface DashboardProps {
+  currentUser: AuthUser;
+}
+
+const Dashboard: React.FC<DashboardProps> = ({ currentUser }) => {
+  const isAdmin = currentUser.role.toLowerCase() === "admin";
+
   return (
         <div className="flex-1 p-8 ml-16 overflow-y-auto ">
           {/* content */}
           <h1 className="text-2xl font-bold text-white">
-            PlaceManagement
+            {isAdmin ? "My PlaceManagement" : "PlaceManagement"}
           </h1>
           <p className="text-gray-600 mb-4">
-            Manager
+            {isAdmin ? `Admin: ${currentUser.username}` : "Manager"}
           </p>
         
-          <BoardList />
+          <BoardList currentUser={currentUser} />
         </div>
 
   );

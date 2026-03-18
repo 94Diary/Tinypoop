@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import BoardCard from "./BoardCard";
 import CreatePlaceModal from "./CreatePlaceModal";
 import axios from "axios";
+import type { AuthUser } from "../types/auth";
 
 interface Place {
   id: string;
@@ -10,16 +11,27 @@ interface Place {
   address: string;
   description: string;
   create_by: string;
+  manager_id?: string | null;
   manager?: {
     username: string;
     email: string;
   };
 }
 
-const BoardList: React.FC = () => {
+interface BoardListProps {
+  currentUser: AuthUser;
+}
+
+const BoardList: React.FC<BoardListProps> = ({ currentUser }) => {
   const [places, setPlaces] = useState<Place[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(true);
+  const role = currentUser.role.toLowerCase();
+  const canDelete = role === "manager";
+  const visiblePlaces =
+    role === "admin"
+      ? places.filter((place) => place.manager_id === currentUser.user_id)
+      : places;
 
   const fetchPlaces = async () => {
     try {
@@ -34,6 +46,11 @@ const BoardList: React.FC = () => {
   };
 
   const handleDelete = async (id: string) => {
+    if (!canDelete) {
+      alert("บัญชี admin ไม่มีสิทธิ์ลบสถานที่");
+      return;
+    }
+
     try {
       const res = await axios.delete(`http://localhost:8080/places/${id}`);
       if (res.status === 200) {
@@ -60,7 +77,7 @@ const BoardList: React.FC = () => {
   return (
     <div className="mt-12">
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10">
-        {places.map((place) => (
+        {visiblePlaces.map((place) => (
           <BoardCard
             key={place.id}
             id={place.id}
@@ -69,7 +86,7 @@ const BoardList: React.FC = () => {
             managerName={place.manager?.username}
             notes={0}
             members={1}
-            onDelete={handleDelete}
+            onDelete={canDelete ? handleDelete : undefined}
           />
         ))}
         
@@ -84,6 +101,7 @@ const BoardList: React.FC = () => {
 
       {isModalOpen && (
         <CreatePlaceModal
+          currentUser={currentUser}
           onClose={() => setIsModalOpen(false)}
           onSuccess={() => {
             fetchPlaces();
@@ -91,9 +109,13 @@ const BoardList: React.FC = () => {
         />
       )}
 
-      {places.length === 0 && !loading && (
+      {visiblePlaces.length === 0 && !loading && (
         <div className="text-center py-10 rounded-xl bg-gray-800 border border-gray-800 mt-16">
-          <p className="text-gray-500">No places found. Click the button above to create one.</p>
+          <p className="text-gray-500">
+            {role === "admin"
+              ? "No assigned places. Please contact manager to assign a place."
+              : "No places found. Click the button above to create one."}
+          </p>
         </div>
       )}
     </div>

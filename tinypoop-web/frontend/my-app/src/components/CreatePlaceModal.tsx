@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
+import type { AuthUser } from "../types/auth";
 
 interface User {
   user_id: string;
@@ -9,18 +10,21 @@ interface User {
 }
 
 interface CreatePlaceModalProps {
+  currentUser: AuthUser;
   onClose: () => void;
   onSuccess: () => void;
 }
 
-const CreatePlaceModal: React.FC<CreatePlaceModalProps> = ({ onClose, onSuccess }) => {
+const CreatePlaceModal: React.FC<CreatePlaceModalProps> = ({ currentUser, onClose, onSuccess }) => {
+  const isAdmin = currentUser.role.toLowerCase() === "admin";
+
   const [formData, setFormData] = useState({
     place_id: "PLACE_" + Math.random().toString(36).substring(2, 9).toUpperCase(),
     name: "",
     address: "",
     description: "",
-    create_by: "Web User",
-    manager_id: "",
+    create_by: currentUser.username,
+    manager_id: isAdmin ? currentUser.user_id : "",
   });
 
   const [users, setUsers] = useState<User[]>([]);
@@ -30,6 +34,10 @@ const CreatePlaceModal: React.FC<CreatePlaceModalProps> = ({ onClose, onSuccess 
 
   useEffect(() => {
     const fetchUsers = async () => {
+      if (isAdmin) {
+        return;
+      }
+
       try {
         const res = await axios.get("http://localhost:8080/users");
         setUsers(res.data);
@@ -37,8 +45,17 @@ const CreatePlaceModal: React.FC<CreatePlaceModalProps> = ({ onClose, onSuccess 
         console.error("Failed to fetch users", err);
       }
     };
+
     fetchUsers();
-  }, []);
+  }, [isAdmin]);
+
+  useEffect(() => {
+    setFormData((prev) => ({
+      ...prev,
+      create_by: currentUser.username,
+      manager_id: isAdmin ? currentUser.user_id : prev.manager_id,
+    }));
+  }, [currentUser.user_id, currentUser.username, isAdmin]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -91,19 +108,29 @@ const CreatePlaceModal: React.FC<CreatePlaceModalProps> = ({ onClose, onSuccess 
           </div>
           <div className="mb-4">
             <label className="block text-sm font-medium mb-1 text-gray-700">Assign Manager (User)</label>
-            <select
-              className="w-full border p-2 rounded focus:ring-2 focus:ring-blue-500 outline-none bg-white"
-              value={formData.manager_id}
-              onChange={(e) => setFormData({ ...formData, manager_id: e.target.value })}
-            >
-              <option value="">-- Select an admin to manage this place --</option>
-              {adminUsers.map((user) => (
-                <option key={user.user_id} value={user.user_id}>
-                  {user.username} ({user.role})
-                </option>
-              ))}
-            </select>
-            <p className="mt-2 text-xs text-gray-500">เลือกได้เฉพาะผู้ใช้ที่มี role admin</p>
+            {isAdmin ? (
+              <div className="w-full border p-2 rounded bg-gray-50 text-gray-700">
+                {currentUser.username} (admin)
+              </div>
+            ) : (
+              <select
+                className="w-full border p-2 rounded focus:ring-2 focus:ring-blue-500 outline-none bg-white"
+                value={formData.manager_id}
+                onChange={(e) => setFormData({ ...formData, manager_id: e.target.value })}
+              >
+                <option value="">-- Select an admin to manage this place --</option>
+                {adminUsers.map((user) => (
+                  <option key={user.user_id} value={user.user_id}>
+                    {user.username} ({user.role})
+                  </option>
+                ))}
+              </select>
+            )}
+            <p className="mt-2 text-xs text-gray-500">
+              {isAdmin
+                ? "บัญชี admin จะถูกกำหนดเป็นผู้ดูแลสถานที่นี้โดยอัตโนมัติ"
+                : "เลือกได้เฉพาะผู้ใช้ที่มี role admin"}
+            </p>
           </div>
           <div className="mb-4">
             <label className="block text-sm font-medium mb-1 text-gray-700">Description</label>
