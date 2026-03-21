@@ -47,6 +47,23 @@ exports.createPlace = async (req, res) => {
   }
 }
 
+exports.updatePlace = async (req, res) => {
+  try {
+    const { id } = req.params
+    const { place_id, name, address, description, create_by, manager_id } = req.body
+    const updatedPlace = await prisma.place.update({
+      where: { id: id },
+      data: { place_id, name, address, description, create_by, manager_id },
+    })
+    res.json(updatedPlace)
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({ error: 'Failed to update place' })
+  }
+}
+
+
+
 exports.deletePlace = async (req, res) => {
   try {
     const { id } = req.params

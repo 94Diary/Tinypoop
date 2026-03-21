@@ -1,15 +1,21 @@
 import React from "react";
-import NavBar from "../NavBar";
+import NavBar from "../Navbar";
 import SideBar from "../SideBar";
 import { Outlet } from "react-router-dom";
+import type { AuthUser } from "../../types/auth";
 
-const MainLayout: React.FC = () => {
+interface MainLayoutProps {
+  currentUser: AuthUser;
+  onLogout: () => void;
+}
+
+const MainLayout: React.FC<MainLayoutProps> = ({ currentUser, onLogout }) => {
   return (
     <div className="h-screen flex flex-col overflow-hidden">
-      <NavBar />
+      <NavBar currentUser={currentUser} onLogout={onLogout} />
 
       <div className="flex flex-1 overflow-hidden ">
-        <SideBar />
+        <SideBar currentUser={currentUser} />
         
 
         <main className="flex-1 overflow-y-auto bg-gray-900/95">
