@@ -56,7 +56,7 @@ const TestPage: React.FC<UsersListProps> = ({
       <div className="flex min-h-screen items-center justify-center bg-slate-950 px-6">
         <div className="rounded-3xl border border-white/10 bg-white/5 px-8 py-6 text-center text-white shadow-2xl backdrop-blur">
           <div className="mx-auto mb-4 h-10 w-10 animate-spin rounded-full border-2 border-amber-300 border-t-transparent" />
-          <p className="text-lg font-medium">กำลังโหลดข้อมูลแอดมินและ PlaceManagement...</p>
+          <p className="text-lg font-medium">กำลังโหลดข้อมูลแอดมินและ Place / Management...</p>
         </div>
       </div>
     );
@@ -90,10 +90,10 @@ const TestPage: React.FC<UsersListProps> = ({
                 Admin Control Center
               </span>
               <h1 className="mt-4 text-4xl font-black tracking-tight text-white md:text-5xl">
-                ลำดับ Admin ที่ดูแล PlaceManagement 
+                ลำดับ Admins ที่ดูแล Place / Management 
               </h1>
               <p className="mt-4 max-w-2xl text-base leading-7 text-slate-300">
-                การจัดการบทบาทของผู้ใช้ในระบบเพื่อมอบหมายสิทธิ์การดูแล PlaceManagement ให้กับผู้ใช้ที่มี role admin โดยเฉพาะ เพื่อความปลอดภัยและการควบคุมที่เหมาะสม
+                การจัดการบทบาทของผู้ใช้ในระบบเพื่อมอบหมายสิทธิ์การดูแล Place / Management ให้กับผู้ใช้ที่มี role admin โดยเฉพาะ เพื่อความปลอดภัยและการควบคุมที่เหมาะสม
               </p>
             </div>
 
@@ -165,7 +165,7 @@ const TestPage: React.FC<UsersListProps> = ({
                           </span>
                         ))
                       ) : (
-                        <span className="text-sm text-slate-400">ยังไม่ได้รับมอบหมาย PlaceManagement</span>
+                        <span className="text-sm text-slate-400">ยังไม่ได้รับมอบหมาย Place / Management</span>
                       )}
                     </div>
                   </div>
@@ -182,7 +182,7 @@ const TestPage: React.FC<UsersListProps> = ({
 
           <div className="rounded-[2rem] border border-slate-200 bg-white/85 p-6 shadow-xl shadow-slate-300/30 backdrop-blur">
             <div>
-              <h2 className="text-2xl font-bold text-slate-900">Assign PlaceManagement</h2>
+              <h2 className="text-2xl font-bold text-slate-900">Assign Place / Management</h2>
               <p className="mt-1 text-sm text-slate-500">เปลี่ยนผู้ดูแลของแต่ละ place ได้ทันที โดยเลือกจาก admin เท่านั้น</p>
             </div>
 

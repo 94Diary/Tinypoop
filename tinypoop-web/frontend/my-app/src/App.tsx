@@ -4,6 +4,8 @@ import MainLayout from "./components/UI/MainLayout";
 import Dashboard from "./components/UI/Dashboard";
 import UserManager from "./components/UserManager";
 import LoginPage from "./components/LoginPage";
+import AdminDashboard from "./components/admin/AdminDashboard";
+import AdminPlaceWorkspace from "./components/admin/AdminPlaceWorkspace";
 import { AUTH_STORAGE_KEY } from "./types/auth";
 import type { AuthUser } from "./types/auth";
 
@@ -103,7 +105,18 @@ function App() {
             path="admin/dashboard"
             element={
               normalizedRole === "admin" ? (
-                <Dashboard currentUser={authUser!} />
+                <AdminDashboard currentUser={authUser!} />
+              ) : (
+                <Navigate to="/dashboard" replace />
+              )
+            }
+          />
+
+          <Route
+            path="admin/place/:placeId"
+            element={
+              normalizedRole === "admin" ? (
+                <AdminPlaceWorkspace currentUser={authUser!} />
               ) : (
                 <Navigate to="/dashboard" replace />
               )
