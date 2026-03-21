@@ -36,6 +36,7 @@ exports.getPageUsers = async (req, res) => {
   }
 }
 
+
 exports.getUserById = async (req, res) =>{
   try {
     const {id} = req.params
